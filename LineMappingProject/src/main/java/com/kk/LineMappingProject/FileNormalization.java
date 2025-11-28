@@ -4,12 +4,10 @@ package com.kk.LineMappingProject;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Scanner;
 
 //kulsum khan - 110139964
 
@@ -34,11 +32,22 @@ public class FileNormalization {
 	
 	public static void normalize(File codeFile, String pathToNormalizedFile) {
 		
-		//open the file for processing
-		Path codeSourcePath = codeFile.toPath();
+		Path codeSourcePath = null; 
+		if(codeFile.exists()) {
+			//open the file for processing
+			codeSourcePath = codeFile.toPath();
+		}
+		else {
+			System.err.print("file does not exist");
+			System.exit(0);
+		}
 		
 		File normalizedFile = new File(pathToNormalizedFile);
-		Path normalizedFilePath = normalizedFile.toPath();
+		
+		Path normalizedFilePath = null;
+		if(normalizedFile.exists()) { //make sure path is valid
+			normalizedFilePath = normalizedFile.toPath();
+		}
 		
 		try(BufferedReader reader = Files.newBufferedReader(codeSourcePath);
 			BufferedWriter writer = Files.newBufferedWriter(normalizedFilePath, StandardOpenOption.TRUNCATE_EXISTING)) {
