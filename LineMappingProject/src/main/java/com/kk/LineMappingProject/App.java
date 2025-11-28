@@ -6,7 +6,7 @@ package com.kk.LineMappingProject;
  */
 
 //testing the project
-//najiya
+
 public class App
 {
     public static void main( String[] args )
@@ -14,3 +14,8 @@ public class App
         System.out.println( "Hello World!" );
     }
 }
+
+//author name: kulsum khan
+//Author: Hajer
+//Author: Yusra Ahmed, ID: 110106816
+//Author: Najiya Ahmad
