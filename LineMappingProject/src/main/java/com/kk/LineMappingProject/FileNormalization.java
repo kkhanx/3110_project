@@ -19,7 +19,8 @@ public class FileNormalization {
 	//to test the method
 	public static void main(String[] args) {
 		
-		//testing
+		//testing with a sample path
+		//can change this to become another file path 
 		String codePath = "C:\\Users\\kulsu\\OneDrive\\Documents\\Person.java";
 		normalize(codePath);
 		
@@ -35,9 +36,9 @@ public class FileNormalization {
 	*/
 	
 	//input: 1 code file path (as a string)
-	//output: creates a text file within parent directory, name of file is like :normalized[ogFileName].txt
+	//output: returns an array list with each line of the code file being normalized
 	
-	//example usage: FileNormalization.normalize("\\path\\to\\codeFile_v1.java");
+	//example usage: ArrayList<String> normalizedFile = FileNormalization.normalize(/path/to/code.java);
 	
 	
 	public static void normalize(String codeSourceStringPath) {
