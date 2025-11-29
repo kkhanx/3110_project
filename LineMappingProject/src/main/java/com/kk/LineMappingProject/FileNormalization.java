@@ -81,7 +81,7 @@ public class FileNormalization {
 				writer.write(normalizedLine);
 				
 				if(nextLine != null) {
-					writer.newLine(); //dont wanna add an extra newLine at the end
+					writer.newLine(); //dont want to add an extra newLine at the end
 					
 				}
 				
