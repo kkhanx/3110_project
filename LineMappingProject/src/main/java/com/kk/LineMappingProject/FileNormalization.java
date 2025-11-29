@@ -3,11 +3,13 @@ package com.kk.LineMappingProject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+
+import org.apache.commons.io.FilenameUtils;
 
 //kulsum khan - 110139964
 
@@ -16,57 +18,72 @@ public class FileNormalization {
 	//to test the method
 	public static void main(String[] args) {
 		
+		//testing
+		String codePath = "C:\\Users\\kulsu\\OneDrive\\Documents\\Person.java";
+		normalize(codePath);
+		
+		
+		
+		
 	}
 	
 	//class will be used to turn code files into standardized text files for processing
 	
-	/*to do: remove whitepsaces around words, standardize spaces to 1 space (all indents and spaces between
-	 * words must become 1 space), make everything lower case, ensure encoding is UTF-8
+	/*to do: remove whitespaces around words, standardize spaces to 1 space (all indents and spaces between
+	 * words must become 1 space), make everything lower case
 	*/
 	
-	//input: 1 code file, and String path of the text file (could be codeName.txt within same folder)
-	//output: 1 text file, with everything normalized
+	//input: 1 code file path (as a string)
+	//output: creates a text file within parent directory, name of file is like :normalized[ogFileName].txt
 	
-	//example usage: File normalizedFile_v1 = FileNormalization.normalize(/path/to/codeFile_v1.java, /path/to/normalizedFile.txt);
+	//example usage: FileNormalization.normalize("\\path\\to\\codeFile_v1.java");
 	
 	
-	public static void normalize(File codeFile, String pathToNormalizedFile) {
+	public static void normalize(String codeSourceStringPath) {
 		
-		Path codeSourcePath = null; 
-		if(codeFile.exists()) {
-			//open the file for processing
-			codeSourcePath = codeFile.toPath();
-		}
-		else {
-			System.err.print("file does not exist");
+		Path codeSourcePath = Paths.get(codeSourceStringPath);
+		
+		String codeFileExt = codeSourcePath.getFileName().toString();
+		String codeFileNoExt = FilenameUtils.getBaseName(codeFileExt);
+		
+		String normalizedFileName = "normalized" + codeFileNoExt + ".txt";
+		
+		Path normalizedFilePath = codeSourcePath.getParent().resolve(normalizedFileName);
+		
+		if(!Files.isReadable(codeSourcePath)) {
+			System.out.println("error");
 			System.exit(0);
 		}
 		
-		File normalizedFile = new File(pathToNormalizedFile);
-		
-		Path normalizedFilePath = null;
-		if(normalizedFile.exists()) { //make sure path is valid
-			normalizedFilePath = normalizedFile.toPath();
-		}
 		
 		try(BufferedReader reader = Files.newBufferedReader(codeSourcePath);
-			BufferedWriter writer = Files.newBufferedWriter(normalizedFilePath, StandardOpenOption.TRUNCATE_EXISTING)) {
+			BufferedWriter writer = Files.newBufferedWriter(normalizedFilePath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
 			
 			//read each line from source code file
 			//normalize it
 			//write normalized file into normalized text file 
 			
-			String lineOfText;
+			String currentLine;
+			String nextLine = reader.readLine();
 			
-			while((lineOfText = reader.readLine()) != null) {
-				
+			while(nextLine != null) {
+				currentLine = nextLine;
+				nextLine = reader.readLine();
 				//normalize: 
 				
 				//1. make it all lower case
-				String normalizedLine = lineOfText.toLowerCase();
+				String normalizedLine = currentLine.toLowerCase();
 				
 				//2. replace all multiple spaces with a single space
-				normalizedLine = normalizedLine.replaceAll("\\s+", " ");
+				normalizedLine = normalizedLine.replaceAll("\\h+", " ");
+				
+				
+				writer.write(normalizedLine);
+				
+				if(nextLine != null) {
+					writer.newLine(); //dont wanna add an extra newLine at the end
+					
+				}
 				
 			}
 		}
