@@ -7,10 +7,6 @@ package com.kk.LineMappingProject;
 
 //testing the project
 
-
-//Hajer 
-// Author: Yusra Ahmed, ID: 110106816
-//Najiya Ahmad
 public class App
 {
     public static void main( String[] args )
@@ -20,3 +16,6 @@ public class App
 }
 
 //author name: kulsum khan
+//Author: Hajer
+//Author: Yusra Ahmed, ID: 110106816
+//Author: Najiya Ahmad
