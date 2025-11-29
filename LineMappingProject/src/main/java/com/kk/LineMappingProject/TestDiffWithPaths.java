@@ -16,7 +16,7 @@ public class TestDiffWithPaths {
 
             System.out.println("=== Testing DiffAlgorithm with File Paths ===\n");
             
-            // Read normalized files (no IOException thrown)
+            // Read normalized files
             List<String> fileALines = FileNormalization.normalize(file1);
             List<String> fileBLines = FileNormalization.normalize(file2);
             
