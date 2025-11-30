@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 
 //kulsum khan - 110139964
+//phase 1: preprocessing
 
 public class FileNormalization {
 	
@@ -34,9 +35,9 @@ public class FileNormalization {
 	
 	//class will be used to turn code files into standardized text files for processing
 	
-	/*to do: remove whitespaces around words, standardize spaces to 1 space (all indents and spaces between
+	/* purpose: remove whitespaces around words, standardize spaces to 1 space (all indents and spaces between
 	 * words must become 1 space), make everything lower case
-	 * keeping empty lines since theyre important for line mapping
+	 * keep empty lines since theyre important for line mapping
 	*/
 	
 	//method normalize(String codeSourceStringPath)
