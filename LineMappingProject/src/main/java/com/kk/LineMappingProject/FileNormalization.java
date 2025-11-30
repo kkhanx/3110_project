@@ -10,34 +10,34 @@ import java.util.ArrayList;
 
 
 //kulsum khan - 110139964
+//phase 1: preprocessing
 
 public class FileNormalization {
 	
-	//to test the method
-	public static void main(String[] args) {
-		
-		//testing with a sample path
-		//can change this to become another file path 
-		String codePath = "C:\\Users\\kulsu\\OneDrive\\Documents\\Person.java";
-		ArrayList<String> test = normalize(codePath);
-		
-		
-		//print out contents of array list to check:
-		for(String s : test) {
-			System.out.println("this is the line:" + s + "\n\tthe index is: " + test.indexOf(s));
-		}
-		
-		
-		
-		
-	}
-	
-	//class will be used to turn code files into standardized text files for processing
-	
-	/*to do: remove whitespaces around words, standardize spaces to 1 space (all indents and spaces between
-	 * words must become 1 space), make everything lower case
-	 * keeping empty lines since theyre important for line mapping
+	/* purpose: remove whitespaces around words, standardize spaces to 1 space (all indents and spaces between
+	 * words must become 1 space), make everything lower case, keep empty lines since theyre important for line mapping
 	*/
+	
+//	//to test the method
+//	public static void main(String[] args) {
+//		
+//		//testing with a sample path
+//		//can change this to become another file path 
+//		String codePath = "C:/Users/kulsu/OneDrive/Documents/Person.java";
+//		ArrayList<String> test = normalize(codePath);
+//		
+//		
+//		//print out contents of array list to check:
+//		for(String s : test) {
+//			System.out.println("this is the line:" + s + "\n\tthe index is: " + test.indexOf(s));
+//		}
+//		
+//		
+//		
+//		
+//	}
+	
+	
 	
 	//method normalize(String codeSourceStringPath)
 	//input: 1 code file path (as a string)
