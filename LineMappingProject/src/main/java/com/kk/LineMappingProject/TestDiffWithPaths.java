@@ -41,24 +41,38 @@ public class TestDiffWithPaths {
         }
         
         private static void printSummary(DiffAlgorithm.DiffResult result) {
-            int unchanged = 0, modified = 0, added = 0, deleted = 0;
+            int unchangedLeft = 0, deleted = 0;
+            int unchangedRight = 0, added = 0;
             
+            // Count changes in left file (fileA)
             for (DiffAlgorithm.DiffLine line : result.leftList) {
-                if (line.changeType == DiffAlgorithm.ChangeType.UNCHANGED) unchanged++;
-                else if (line.changeType == DiffAlgorithm.ChangeType.MODIFIED) modified++;
-                else if (line.changeType == DiffAlgorithm.ChangeType.DELETED) deleted++;
+                if (line.changeType == DiffAlgorithm.ChangeType.UNCHANGED) {
+                    unchangedLeft++;
+                } else if (line.changeType == DiffAlgorithm.ChangeType.DELETED) {
+                    deleted++;
+                }
             }
             
+            // Count changes in right file (fileB)
             for (DiffAlgorithm.DiffLine line : result.rightList) {
-                if (line.changeType == DiffAlgorithm.ChangeType.ADDED) added++;
+                if (line.changeType == DiffAlgorithm.ChangeType.UNCHANGED) {
+                    unchangedRight++;
+                } else if (line.changeType == DiffAlgorithm.ChangeType.ADDED) {
+                    added++;
+                }
             }
             
             System.out.println("\n🎯 SUMMARY:");
-            System.out.println("   Unchanged: " + unchanged + " lines");
-            System.out.println("   Modified:  " + modified + " lines");
-            System.out.println("   Added:     " + added + " lines");
-            System.out.println("   Deleted:   " + deleted + " lines");
-            System.out.println("   Total changes: " + result.editScript.size() + " operations");
+            System.out.println("   Unchanged lines in File A: " + unchangedLeft);
+            System.out.println("   Unchanged lines in File B: " + unchangedRight);
+            System.out.println("   Deleted lines: " + deleted);
+            System.out.println("   Added lines: " + added);
+            System.out.println("   Total edit operations: " + result.editScript.size());
+            
+            // Verify consistency
+            System.out.println("\n📊 CONSISTENCY CHECK:");
+            System.out.println("   File A total: " + result.leftList.size() + " lines (" + unchangedLeft + " unchanged + " + deleted + " deleted)");
+            System.out.println("   File B total: " + result.rightList.size() + " lines (" + unchangedRight + " unchanged + " + added + " added)");
+        }
         }
     }
-}
