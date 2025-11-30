@@ -1,0 +1,69 @@
+package lab03;
+import java.util.*;
+
+public class student {
+ string name;
+ int id;
+ float marks[];
+	
+ public student(string name, int id, float marks[]) {
+ this.name = name;
+ this.id = id;
+ this.marks = new float[] {marks[0], marks[1], marks[2]};
+		
+		
+ }
+	
+ public float getaveragemark() {
+ float avg = (float)(this.marks[0] + this.marks[1] + this.marks[2])/3;
+ return avg;
+		
+ }
+	
+ public void printstudentdetails() {
+ system.out.println(this.name);
+ system.out.println(this.id);
+ for(int j = 0; j<3; j++) {
+ system.out.print(this.marks[j] + " ");
+ }
+ system.out.println("");
+		
+		
+ }
+	
+ public boolean ispassing() {
+ if(this.getaveragemark() >= 50) {
+ return true;
+ }
+ else {
+ return false;
+ }
+ }
+	
+ public static void findtopscorer(student[] students) {
+ float topscore = 0;
+ int topscorerindex = 0;
+ int i;
+ for(i = 0; i<students.length; i++) {
+ if(students[i].getaveragemark() >= topscore) {
+ topscore = students[i].getaveragemark();
+ topscorerIndex = i;
+ }
+			
+ }
+ system.out.println(students[topscorerindex].name);
+ system.out.println(students[topscorerindex].id);
+ for(int j = 0; j<3; j++) {
+ system.out.print(students[topscorerindex].marks[j] + " ");
+ }
+ system.out.println("");
+ system.out.println(students[topscorerIndex].getaveragemark());
+
+ }
+
+ public static void main(string[] args) {
+ // TODO Auto-generated method stub
+
+ }
+
+}
