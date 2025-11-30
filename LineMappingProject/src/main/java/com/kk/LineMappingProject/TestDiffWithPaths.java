@@ -26,7 +26,43 @@ public class TestDiffWithPaths {
             // Run DiffAlgorithm
             DiffAlgorithm diff = new DiffAlgorithm();
             DiffAlgorithm.DiffResult result = diff.computeDiff(fileALines, fileBLines);
-            
+
+            // === Phase 4: Similarity-based mapping ===
+            SimilarityMapper similarityMapper = new SimilarityMapper();
+
+            // TEMPORARY candidate map: every left line can match any right line
+            // Later MUST replace this with SimHash candidate generation.
+            java.util.Map<Integer, java.util.List<Integer>> candidateMap = new java.util.HashMap<>();
+
+            for (int i = 0; i < fileALines.size(); i++) {
+                java.util.List<Integer> allCandidates = new java.util.ArrayList<>();
+                for (int j = 0; j < fileBLines.size(); j++) {
+                    allCandidates.add(j);
+                }
+                candidateMap.put(i, allCandidates);
+            }
+
+            /* This will replace the temporary candidate mapping when phase 3 is complete. Will require testing.
+            Map<Integer, List<Integer>> candidateMap = CandidateGenerator.buildCandidates(fileALines, fileBLines, 15);
+            SimilarityMapper similarityMapper = new SimilarityMapper();
+            List<LineMatch> initialMatches = similarityMapper.computeInitialMatches(fileALines, fileBLines, candidateMap);
+            List<LineMatch> finalMatches = similarityMapper.classifyChanges(initialMatches, fileBLines.size());
+            */
+
+            // Phase 4.1 – initial matches
+            java.util.List<LineMatch> initialMatches =
+                    similarityMapper.computeInitialMatches(fileALines, fileBLines, candidateMap);
+
+            // Phase 4.2 – classify changes
+            java.util.List<LineMatch> finalMatches =
+                    similarityMapper.classifyChanges(initialMatches, fileBLines.size());
+
+            // For now, print them
+            System.out.println("\n=== PHASE 4: Similarity-based Line Mapping ===");
+            for (LineMatch m : finalMatches) {
+                System.out.println(m);
+            }
+
             printResults(result);
         }
         
