@@ -2,6 +2,8 @@ package com.kk.LineMappingProject;
 
 import java.util.*;
 
+// Yusra Ahmed 110106816
+
 public class DiffAlgorithm {
  
     public static class DiffResult {
@@ -101,23 +103,44 @@ public class DiffAlgorithm {
         return script;
     }
     
-    // STEP 3: Create Change Lists
+    // STEP 3: Create Change Lists - FIXED VERSION
     private List<DiffLine> createAnnotatedList(List<String> lines, List<EditOperation> script, boolean isLeft) {
         List<DiffLine> annotated = new ArrayList<>();
-        Set<Integer> changedLines = new HashSet<>();
         
-        for (EditOperation op : script) {
-            if (isLeft && (op.type == OperationType.DELETE || op.type == OperationType.CHANGE)) {
-                changedLines.add(op.leftLine);
-            } else if (!isLeft && (op.type == OperationType.ADD || op.type == OperationType.CHANGE)) {
-                changedLines.add(op.rightLine);
+        if (isLeft) {
+            // For left file (fileA): handle DELETED and UNCHANGED lines
+            Set<Integer> deletedLines = new HashSet<>();
+            
+            for (EditOperation op : script) {
+                if (op.type == OperationType.DELETE) {
+                    deletedLines.add(op.leftLine);
+                }
             }
-        }
-        
-        for (int i = 0; i < lines.size(); i++) {
-            // Changed lines (modified between versions)
-            ChangeType changeType = changedLines.contains(i) ? ChangeType.MODIFIED : ChangeType.UNCHANGED;
-            annotated.add(new DiffLine(lines.get(i), changeType, i + 1));
+            
+            for (int i = 0; i < lines.size(); i++) {
+                if (deletedLines.contains(i)) {
+                    annotated.add(new DiffLine(lines.get(i), ChangeType.DELETED, i + 1));
+                } else {
+                    annotated.add(new DiffLine(lines.get(i), ChangeType.UNCHANGED, i + 1));
+                }
+            }
+        } else {
+            // For right file (fileB): handle ADDED and UNCHANGED lines
+            Set<Integer> addedLines = new HashSet<>();
+            
+            for (EditOperation op : script) {
+                if (op.type == OperationType.ADD) {
+                    addedLines.add(op.rightLine);
+                }
+            }
+            
+            for (int i = 0; i < lines.size(); i++) {
+                if (addedLines.contains(i)) {
+                    annotated.add(new DiffLine(lines.get(i), ChangeType.ADDED, i + 1));
+                } else {
+                    annotated.add(new DiffLine(lines.get(i), ChangeType.UNCHANGED, i + 1));
+                }
+            }
         }
         
         return annotated;
