@@ -6,7 +6,7 @@ import java.util.Map;
 
 // Yusra Ahmed 110106816, Mahnoz Akhtari 105011198
 
-public class TestDiffWithPaths {
+public class Main {
 
     /**
      * Direct entry point so you can run:
@@ -22,11 +22,11 @@ public class TestDiffWithPaths {
         String file1 = args[0];
         String file2 = args[1];
 
-        DiffTester.testFiles(file1, file2);
+        LineMapper.testFiles(file1, file2);
     }
 
     // Separate class for the testing logic
-    public static class DiffTester {
+    public static class LineMapper {
 
         public static void testFiles(String file1, String file2) {
 
