@@ -5,12 +5,13 @@ import java.util.ArrayList;
 import java.util.Map;
 
 // Yusra Ahmed 110106816, Mahnoz Akhtari 105011198
+// extra changes: Kulsum Khan 110139964
 
-public class TestDiffWithPaths {
+public class Main {
 
     /**
      * Direct entry point so you can run:
-     *   java -cp target/classes com.kk.LineMappingProject.TestDiffWithPaths fileA fileB
+     *   java -cp target/classes com.kk.LineMappingProject.Main fileA fileB
      */
     public static void main(String[] args) {
         if (args.length < 2) {
@@ -22,15 +23,15 @@ public class TestDiffWithPaths {
         String file1 = args[0];
         String file2 = args[1];
 
-        DiffTester.testFiles(file1, file2);
+        LineMapper.testFiles(file1, file2);
     }
 
     // Separate class for the testing logic
-    public static class DiffTester {
+    public static class LineMapper {
 
         public static void testFiles(String file1, String file2) {
 
-            System.out.println("=== Testing DiffAlgorithm with File Paths ===\n");
+            System.out.println("=== Testing Line Mapping with File Paths ===\n");
 
             // -----------------------------
             // Phase 1: Read normalized files
