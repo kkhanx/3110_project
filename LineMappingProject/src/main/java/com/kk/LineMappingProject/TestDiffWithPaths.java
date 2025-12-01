@@ -6,23 +6,36 @@ import com.kk.LineMappingProject.FileNormalization;
 import com.kk.LineMappingProject.DiffAlgorithm;
 import java.util.Map;
 
-// Yusra Ahmed 110106816, Mahnoz Akhtari 105011198
+// Yusra Ahmed 110106816, Mahnoz Akhtari 105011198, Najiya Ahmad 110110372
 
 public class TestDiffWithPaths {
+	
+	// main entry point so TestDiffWithPaths can be run directly
+    public static void main(String[] args) {  //
+        if (args.length < 2) {               // ADDED
+            System.out.println("Usage: java com.kk.LineMappingProject.TestDiffWithPaths <fileA> <fileB>");  
+            return;                          
+        }                                    
+
+        String file1 = args[0];              
+        String file2 = args[1];              
+
+        DiffTester.testFiles(file1, file2);  
+    }   
     
     // Separate class for the testing logic
     public static class DiffTester {
         
         public static void testFiles(String file1, String file2) {
 
-            System.out.println("=== Testing DiffAlgorithm with File Paths ===\n");
+            //System.out.println("=== Testing DiffAlgorithm with File Paths ===\n");
             
             // Read normalized files
             List<String> fileALines = FileNormalization.normalize(file1);
             List<String> fileBLines = FileNormalization.normalize(file2);
             
-            System.out.println("File A: " + file1 + " (" + fileALines.size() + " lines)");
-            System.out.println("File B: " + file2 + " (" + fileBLines.size() + " lines)");
+            //System.out.println("File A: " + file1 + " (" + fileALines.size() + " lines)");
+            //System.out.println("File B: " + file2 + " (" + fileBLines.size() + " lines)");
             
             // Run DiffAlgorithm
             DiffAlgorithm diff = new DiffAlgorithm();
@@ -44,7 +57,7 @@ public class TestDiffWithPaths {
                     similarityMapper.classifyChanges(initialMatches, fileBLines.size());
 
             // For now, print them
-            System.out.println("\n=== PHASE 4: Similarity-based Line Mapping ===");
+            /*System.out.println("\n=== PHASE 4: Similarity-based Line Mapping ===");
             for (LineMatch m : finalMatches) {
                 System.out.println(m);
             }
@@ -59,9 +72,19 @@ public class TestDiffWithPaths {
             }
             
             printSummary(result);
+        }*/
+            OutputGenerator.printMappingOutput(      
+                    file1,                           
+                    file2,                            
+                    fileALines,                       
+                    fileBLines,                        
+                    finalMatches                     
+            );                                        
+
+            //printSummary(result); //use phase2 summary? 
         }
         
-        private static void printSummary(DiffAlgorithm.DiffResult result) {
+       /* private static void printSummary(DiffAlgorithm.DiffResult result) {
             int unchangedLeft = 0, deleted = 0;
             int unchangedRight = 0, added = 0;
             
@@ -94,6 +117,7 @@ public class TestDiffWithPaths {
             System.out.println("\n📊 CONSISTENCY CHECK:");
             System.out.println("   File A total: " + result.leftList.size() + " lines (" + unchangedLeft + " unchanged + " + deleted + " deleted)");
             System.out.println("   File B total: " + result.rightList.size() + " lines (" + unchangedRight + " unchanged + " + added + " added)");
-        }
-        }
+        }*/
+        
     }
+}

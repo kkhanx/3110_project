@@ -7,21 +7,26 @@ import java.util.List;
 public class OutputGenerator {
 
     public static void printMappingOutput(
-            String fileAName,            // original file
-            String fileBName,            // modified file
-            List<String> leftLines,      // normalized lines from file A
-            List<String> rightLines,     // normalized lines from file B
-            List<LineMatch> matches      // final matches from Phase 4
+            String fileAName,  // original file
+            String fileBName, // modified file
+            List<String> leftLines, // normalized lines from file A
+            List<String> rightLines,// normalized lines from file B
+            List<LineMatch> matches // final matches from Phase 4
     ) {
         int totalLinesA = (leftLines == null) ? 0 : leftLines.size();
         int totalLinesB = (rightLines == null) ? 0 : rightLines.size();
 
-        // Header
+        // Header updated
+        System.out.println("==== Testing DiffAlgorithm with File Paths ====\n");  
+        System.out.println("File A: " + fileAName + " (" + totalLinesA + " lines)");  
+        System.out.println("File B: " + fileBName + " (" + totalLinesB + " lines)" + "\n");  
+
+        /*Header
         System.out.println("MAPPING_START");
-        System.out.println("FILE_A: " + fileAName);
-        System.out.println("FILE_B: " + fileBName);
+        System.out.println("FILE_A: " + fileAName );
+        System.out.println("FILE_B: " + fileBName );
         System.out.println("TOTAL_LINES_A: " + totalLinesA);
-        System.out.println("TOTAL_LINES_B: " + totalLinesB + "\n");
+        System.out.println("TOTAL_LINES_B: " + totalLinesB + "\n"); */
 
         System.out.println("MAPPINGS:");
 
