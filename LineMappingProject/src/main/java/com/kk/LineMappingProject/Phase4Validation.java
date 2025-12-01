@@ -41,7 +41,7 @@ public class Phase4Validation {
         return candidateMap;
     }
 
-    private static List<LineMatch> runPhase4(List<String> leftLines, List<String> rightLines) {
+    static List<LineMatch> runPhase4(List<String> leftLines, List<String> rightLines) {
         SimilarityMapper sm = new SimilarityMapper();
         Map<Integer, List<Integer>> candidateMap =
                 buildBruteForceCandidates(leftLines.size(), rightLines.size());
