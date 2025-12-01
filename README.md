@@ -6,7 +6,7 @@ This project focuses on building a simple tool that compares two versions of a t
 
 # Authors
 Kulsum Khan khan4n1@uwindsor.ca  
-Yusra Ahmed ahmed2z@uwindsor.ca  
+Yusra Ahmed ahmed2z@uwindsor.ca (shoaib-peg also Yusra but different computer)  
 Najiya Ahmad ahmad29@uwindsor.ca  
 Mahnoz Akhtari akhtari1@uwindsor.ca  
 Hajar Alchamih alchamih@uwindsor.ca  
