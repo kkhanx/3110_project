@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 
-//kulsum khan - 110139964
+//Kulsum Khan - 110139964
 //phase 1: preprocessing
 
 public class FileNormalization {
@@ -18,33 +18,12 @@ public class FileNormalization {
 	 * words must become 1 space), make everything lower case, keep empty lines since theyre important for line mapping
 	*/
 	
-//	//to test the method
-//	public static void main(String[] args) {
-//		
-//		//testing with a sample path
-//		//can change this to become another file path 
-//		String codePath = "C:/Users/kulsu/OneDrive/Documents/Person.java";
-//		ArrayList<String> test = normalize(codePath);
-//		
-//		
-//		//print out contents of array list to check:
-//		for(String s : test) {
-//			System.out.println("this is the line:" + s + "\n\tthe index is: " + test.indexOf(s));
-//		}
-//		
-//		
-//		
-//		
-//	}
-	
-	
 	
 	//method normalize(String codeSourceStringPath)
 	//input: 1 code file path (as a string)
 	//output: returns an array list with each line of the code file being normalized
 	
 	//example usage: ArrayList<String> normalizedFile = FileNormalization.normalize(/path/to/code.java);
-	
 	
 	public static ArrayList<String> normalize(String codeSourceStringPath) {
 		
