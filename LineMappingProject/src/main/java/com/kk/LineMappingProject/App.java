@@ -1,19 +1,13 @@
 package com.kk.LineMappingProject;
 
-import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Hello world!
- *
- */
-
-//testing the project
+import com.kk.LineMappingProject.LineMatch;
 
 public class App
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
         
         // Adding DiffAlgorithm to main
         if (args.length < 2) {
@@ -26,7 +20,7 @@ public class App
         String file2 = args[1];
         
         // Call the separate test class
-        TestDiffWithPaths.DiffTester.testFiles(file1, file2);
+        //TestDiffWithPaths.DiffTester.testFiles(file1, file2);
     	
     	
 //    	if(args.length < 2) {
@@ -40,6 +34,27 @@ public class App
 //    	
     	
     	//phase 2:
+        
+        List<String> normalizedFile1 = FileNormalization.normalize(args[0]);
+        List<String> normalizedFile2 = FileNormalization.normalize(args[1]);
+        
+        DiffAlgorithm diff = new DiffAlgorithm();
+        DiffAlgorithm.DiffResult diffResult =
+                diff.computeDiff(normalizedFile1, normalizedFile2);
+        
+        SimilarityMapper sm = new SimilarityMapper();
+        
+
+        List<LineMatch> matches = Phase4Validation.runPhase4(normalizedFile1, normalizedFile2);
+        
+        OutputGenerator.printMappingOutput(
+                args[0],
+                args[1],
+                normalizedFile1,
+                normalizedFile2,
+                matches
+        );
+        
     }
 }
 
