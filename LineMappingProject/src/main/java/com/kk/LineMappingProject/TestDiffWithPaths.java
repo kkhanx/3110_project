@@ -1,99 +1,232 @@
 package com.kk.LineMappingProject;
 
 import java.util.List;
-import java.util.ArrayList; 
-import com.kk.LineMappingProject.FileNormalization;
-import com.kk.LineMappingProject.DiffAlgorithm;
+import java.util.ArrayList;
 import java.util.Map;
 
 // Yusra Ahmed 110106816, Mahnoz Akhtari 105011198
 
 public class TestDiffWithPaths {
-    
+
+    /**
+     * Direct entry point so you can run:
+     *   java -cp target/classes com.kk.LineMappingProject.TestDiffWithPaths fileA fileB
+     */
+    public static void main(String[] args) {
+        if (args.length < 2) {
+            System.out.println("Usage: java com.kk.LineMappingProject.TestDiffWithPaths <file1_path> <file2_path>");
+            System.out.println("Example: java com.kk.LineMappingProject.TestDiffWithPaths /path/to/version1.java /path/to/version2.java");
+            return;
+        }
+
+        String file1 = args[0];
+        String file2 = args[1];
+
+        DiffTester.testFiles(file1, file2);
+    }
+
     // Separate class for the testing logic
     public static class DiffTester {
-        
+
         public static void testFiles(String file1, String file2) {
 
             System.out.println("=== Testing DiffAlgorithm with File Paths ===\n");
-            
-            // Read normalized files
+
+            // -----------------------------
+            // Phase 1: Read normalized files
+            // -----------------------------
             List<String> fileALines = FileNormalization.normalize(file1);
             List<String> fileBLines = FileNormalization.normalize(file2);
-            
+
             System.out.println("File A: " + file1 + " (" + fileALines.size() + " lines)");
             System.out.println("File B: " + file2 + " (" + fileBLines.size() + " lines)");
-            
-            // Run DiffAlgorithm
+
+            // ----------------------------------------
+            // Phase 2: Run LCS-based DiffAlgorithm
+            // ----------------------------------------
             DiffAlgorithm diff = new DiffAlgorithm();
             DiffAlgorithm.DiffResult result = diff.computeDiff(fileALines, fileBLines);
 
+            List<DiffAlgorithm.DiffLine> leftDiff  = result.leftList;
+            List<DiffAlgorithm.DiffLine> rightDiff = result.rightList;
+
+            // -----------------------------------------------------------------
+            // Phase 3: Build candidate sets using SimHash (top-K = 15),
+            // driven by Phase 2's "interesting" lines (non-UNCHANGED).
+            // -----------------------------------------------------------------
+
+            // Phase-3-specific views: only lines that are NOT UNCHANGED
+            List<String> phase3LeftLines = new ArrayList<>();
+            List<Integer> phase3LeftToOriginal = new ArrayList<>();
+
+            for (int i = 0; i < leftDiff.size(); i++) {
+                DiffAlgorithm.DiffLine dl = leftDiff.get(i);
+                if (dl.changeType != ChangeType.UNCHANGED) {
+                    phase3LeftLines.add(dl.content);
+                    phase3LeftToOriginal.add(i);   // original index in file A
+                }
+            }
+
+            List<String> phase3RightLines = new ArrayList<>();
+            List<Integer> phase3RightToOriginal = new ArrayList<>();
+
+            for (int j = 0; j < rightDiff.size(); j++) {
+                DiffAlgorithm.DiffLine dl = rightDiff.get(j);
+                if (dl.changeType != ChangeType.UNCHANGED) {
+                    phase3RightLines.add(dl.content);
+                    phase3RightToOriginal.add(j);  // original index in file B
+                }
+            }
+
+            Map<Integer, List<Integer>> candidateMap =
+                    CandidateGenerator.buildCandidates(phase3LeftLines, phase3RightLines, 15);
+
+            // -----------------------------------------
             // Phase 4: Similarity-based mapping
+            // -----------------------------------------
             SimilarityMapper similarityMapper = new SimilarityMapper();
 
-            // Phase 3: Build candidate sets using SimHash (top-K = 15)
-            Map<Integer, List<Integer>> candidateMap =
-                    CandidateGenerator.buildCandidates(fileALines, fileBLines, 15);
+            // Phase 4.1 – initial matches on Phase-3 views
+            List<LineMatch> initialMatchesPhase3 =
+                    similarityMapper.computeInitialMatches(phase3LeftLines, phase3RightLines, candidateMap);
 
-            // Phase 4.1 – initial matches
-            List<LineMatch> initialMatches =
-                    similarityMapper.computeInitialMatches(fileALines, fileBLines, candidateMap);
+            // Phase 4.2 – classify changes (final labels) on Phase-3 views
+            List<LineMatch> finalMatchesPhase3 =
+                    similarityMapper.classifyChanges(initialMatchesPhase3, phase3RightLines.size());
 
-            // Phase 4.2 – classify changes
-            List<LineMatch> finalMatches =
-                    similarityMapper.classifyChanges(initialMatches, fileBLines.size());
+            // --------------------------------------------------------
+            // Map Phase-3 indices back to original file indices
+            // --------------------------------------------------------
+            List<LineMatch> finalMatches = new ArrayList<>();
 
-            // For now, print them
+            for (LineMatch m : finalMatchesPhase3) {
+                int phase3LeftIdx = m.getLeftIndex();
+                int phase3RightIdx = m.getRightIndex();
+
+                int originalLeftIdx = -1;
+                int originalRightIdx = -1;
+
+                if (phase3LeftIdx >= 0 && phase3LeftIdx < phase3LeftToOriginal.size()) {
+                    originalLeftIdx = phase3LeftToOriginal.get(phase3LeftIdx);
+                }
+
+                if (phase3RightIdx >= 0 && phase3RightIdx < phase3RightToOriginal.size()) {
+                    originalRightIdx = phase3RightToOriginal.get(phase3RightIdx);
+                }
+
+                finalMatches.add(
+                        new LineMatch(
+                                originalLeftIdx,
+                                originalRightIdx,
+                                m.getChangeType(),
+                                m.getSimilarity()
+                        )
+                );
+            }
+
+            // --------------------------------------------------------
+            // Bring back UNCHANGED lines from Phase 2 (LCS)
+            // --------------------------------------------------------
+            for (int i = 0; i < leftDiff.size(); i++) {
+                DiffAlgorithm.DiffLine dl = leftDiff.get(i);
+                if (dl.changeType == ChangeType.UNCHANGED) {
+                    // assume unchanged line i in A maps to i in B
+                    finalMatches.add(new LineMatch(i, i, ChangeType.UNCHANGED, 1.0));
+                }
+            }
+
+            // --------------------------------------------------------
+            // FIX: Re-label UNCHANGED as MOVED when indices differ
+            // but similarity is very high.
+            // --------------------------------------------------------
+            for (int k = 0; k < finalMatches.size(); k++) {
+                LineMatch lm = finalMatches.get(k);
+                int li = lm.getLeftIndex();
+                int ri = lm.getRightIndex();
+
+                if (li >= 0 && ri >= 0 &&
+                    lm.getChangeType() == ChangeType.UNCHANGED &&
+                    li != ri &&
+                    lm.getSimilarity() >= 0.95) {
+
+                    // Re-label as MOVED using original indices
+                    finalMatches.set(
+                        k,
+                        new LineMatch(li, ri, ChangeType.MOVED, lm.getSimilarity())
+                    );
+                }
+            }
+
+            // -----------------------------
+            // Print Phase 4 matches
+            // -----------------------------
             System.out.println("\n=== PHASE 4: Similarity-based Line Mapping ===");
             for (LineMatch m : finalMatches) {
                 System.out.println(m);
             }
-            printResults(result);
+
+            // Optional: still print structural edit script from LCS for reference
+            printEditScript(result);
+
+            // Summary from Phase 4 labels
+            printSummaryFromMatches(finalMatches);
+
+            // -----------------------------------------
+            // Phase 5: Final mapping-style output
+            // -----------------------------------------
+            OutputGenerator.printMappingOutput(
+                    file1,
+                    file2,
+                    fileALines,
+                    fileBLines,
+                    finalMatches
+            );
         }
-        
-        private static void printResults(DiffAlgorithm.DiffResult result) {
-            System.out.println("\n🔧 EDIT OPERATIONS FOUND: " + result.editScript.size());
+
+        private static void printEditScript(DiffAlgorithm.DiffResult result) {
+            System.out.println("\n EDIT OPERATIONS (LCS-based) FOUND: " + result.editScript.size());
             for (DiffAlgorithm.EditOperation op : result.editScript) {
-                System.out.println("   " + op.type + " - Line " + (op.rightLine + 1) + ": " + 
-                    (op.content.length() > 50 ? op.content.substring(0, 50) + "..." : op.content));
+                String content = op.content;
+                if (content.length() > 50) {
+                    content = content.substring(0, 50) + "...";
+                }
+                // Note: op.rightLine is used here to anchor to B's context
+                System.out.println("   " + op.type + " - Line " + (op.rightLine + 1) + ": " + content);
             }
-            
-            printSummary(result);
         }
-        
-        private static void printSummary(DiffAlgorithm.DiffResult result) {
-            int unchangedLeft = 0, deleted = 0;
-            int unchangedRight = 0, added = 0;
-            
-            // Count changes in left file (fileA)
-            for (DiffAlgorithm.DiffLine line : result.leftList) {
-                if (line.changeType == DiffAlgorithm.ChangeType.UNCHANGED) {
-                    unchangedLeft++;
-                } else if (line.changeType == DiffAlgorithm.ChangeType.DELETED) {
-                    deleted++;
+
+        private static void printSummaryFromMatches(List<LineMatch> matches) {
+            int modified = 0, moved = 0, added = 0, deleted = 0, unchanged = 0;
+
+            for (LineMatch lm : matches) {
+                switch (lm.getChangeType()) {
+                    case MODIFIED:
+                        modified++;
+                        break;
+                    case MOVED:
+                        moved++;
+                        break;
+                    case ADDED:
+                        added++;
+                        break;
+                    case DELETED:
+                        deleted++;
+                        break;
+                    case UNCHANGED:
+                        unchanged++;
+                        break;
+                    default:
+                        break;
                 }
             }
-            
-            // Count changes in right file (fileB)
-            for (DiffAlgorithm.DiffLine line : result.rightList) {
-                if (line.changeType == DiffAlgorithm.ChangeType.UNCHANGED) {
-                    unchangedRight++;
-                } else if (line.changeType == DiffAlgorithm.ChangeType.ADDED) {
-                    added++;
-                }
-            }
-            
-            System.out.println("\n🎯 SUMMARY:");
-            System.out.println("   Unchanged lines in File A: " + unchangedLeft);
-            System.out.println("   Unchanged lines in File B: " + unchangedRight);
-            System.out.println("   Deleted lines: " + deleted);
-            System.out.println("   Added lines: " + added);
-            System.out.println("   Total edit operations: " + result.editScript.size());
-            
-            // Verify consistency
-            System.out.println("\n📊 CONSISTENCY CHECK:");
-            System.out.println("   File A total: " + result.leftList.size() + " lines (" + unchangedLeft + " unchanged + " + deleted + " deleted)");
-            System.out.println("   File B total: " + result.rightList.size() + " lines (" + unchangedRight + " unchanged + " + added + " added)");
-        }
+
+            System.out.println("\n SUMMARY (Phase 4 – Similarity Mapping):");
+            System.out.println("   Unchanged: " + unchanged);
+            System.out.println("   Modified : " + modified);
+            System.out.println("   Moved    : " + moved);
+            System.out.println("   Added    : " + added);
+            System.out.println("   Deleted  : " + deleted);
+            System.out.println("   Total labelled lines: " + matches.size());
         }
     }
+}
