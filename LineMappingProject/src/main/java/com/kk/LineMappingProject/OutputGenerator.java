@@ -17,7 +17,7 @@ public class OutputGenerator {
         int totalLinesB = (rightLines == null) ? 0 : rightLines.size();
 
         // Header
-        System.out.println("MAPPING_START");
+        System.out.println("\nMAPPING_START");
         System.out.println("FILE_A: " + fileAName);
         System.out.println("FILE_B: " + fileBName);
         System.out.println("TOTAL_LINES_A: " + totalLinesA);
@@ -25,7 +25,6 @@ public class OutputGenerator {
 
         System.out.println("MAPPINGS:");
 
-        // Summary counters
         int unchanged = 0;
         int modified = 0;
         int added = 0;
@@ -40,7 +39,6 @@ public class OutputGenerator {
             ChangeType type = lm.getChangeType();
             double sim = lm.getSimilarity();
 
-            // Update summary counters
             switch (type) {
                 case UNCHANGED:
                     unchanged++;
@@ -61,20 +59,17 @@ public class OutputGenerator {
                     break;
             }
 
-            // Track for average confidence
             confidenceSum += sim;
             confidenceCount++;
 
-            //  Skip printing unchanged lines (but keep them in summary)
+            // Skip printing unchanged lines (but keep them in summary)
             if (type == ChangeType.UNCHANGED) {
                 continue;
             }
 
-            // Compute line numbers with -1 for "no line"
             int lineA = (leftIdx >= 0 && leftIdx < totalLinesA) ? (leftIdx + 1) : -1;
             int lineB = (rightIdx >= 0 && rightIdx < totalLinesB) ? (rightIdx + 1) : -1;
 
-            // Safely grab content strings
             String contentA = "";
             if (leftIdx >= 0 && leftIdx < totalLinesA) {
                 contentA = leftLines.get(leftIdx);
@@ -85,7 +80,6 @@ public class OutputGenerator {
                 contentB = rightLines.get(rightIdx);
             }
 
-            // Base prefix: "A - B: TYPE: confidence: "
             String prefix = lineA + " - " + lineB + ": " +
                             type.name() + ": " +
                             String.format("%.3f", sim) + ": ";
@@ -94,27 +88,18 @@ public class OutputGenerator {
 
             switch (type) {
                 case DELETED:
-                    // A had a line that was deleted
                     mappingLine = prefix + contentA;
                     break;
-
                 case ADDED:
-                    // B has a line that was added
                     mappingLine = prefix + contentB;
                     break;
-
                 case MOVED:
-                    // show the line once 
                     mappingLine = prefix + contentB;
                     break;
-
                 case MODIFIED:
-                    // Show old -> new
                     mappingLine = prefix + contentA + " -> " + contentB;
                     break;
-
                 default:
-                    // Fallback (shouldn't happen because we skip unchanged above)
                     mappingLine = prefix + contentA + " -> " + contentB;
                     break;
             }
@@ -122,13 +107,11 @@ public class OutputGenerator {
             System.out.println(mappingLine);
         }
 
-        // Average confidence
         double avgConfidence = 0.0;
         if (confidenceCount > 0) {
             avgConfidence = confidenceSum / confidenceCount;
         }
 
-        // Summary
         System.out.println();
         System.out.println("SUMMARY:");
         System.out.println("UNCHANGED: " + unchanged);
@@ -140,5 +123,3 @@ public class OutputGenerator {
         System.out.println("MAPPING_END");
     }
 }
-
-

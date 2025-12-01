@@ -3,11 +3,15 @@ package com.kk.LineMappingProject;
 import java.util.*;
 
 // Mahnoz Akhtari, 105011198
-// Phase 4
+// Phase 4 – similarity-based mapping and final change labels.
 
 public class SimilarityMapper {
 
-    private static final double SIMILARITY_THRESHOLD = 0.5;
+    private static final double SIMILARITY_THRESHOLD = 0.7;
+
+    // NEW: how far we allow lines to "move" in terms of index
+    // tweak this number (e.g., 8–12) based on experiments (limitation - possible fix to use block-recognition)
+    private static final int MAX_POSITION_JUMP = 10;
 
     /**
      * Compute normalized Levenshtein similarity between two lines.
@@ -60,7 +64,8 @@ public class SimilarityMapper {
     private int min3(int a, int b, int c) {
         return Math.min(a, Math.min(b, c));
     }
-        /**
+
+    /**
      * Phase 4.1: For each line in L, pick the best candidate in R based on similarity.
      * Returns a list of LineMatch (one per left line).
      */
@@ -86,9 +91,15 @@ public class SimilarityMapper {
             double bestSim = 0.0;
 
             for (Integer rIdx : candidates) {
-                if (rIdx < 0 || rIdx >= rightLines.size()) {
+                if (rIdx == null || rIdx < 0 || rIdx >= rightLines.size()) {
                     continue;
                 }
+
+                // NEW: don't allow crazy jumps in position
+                if (Math.abs(i - rIdx) > MAX_POSITION_JUMP) {
+                    continue;
+                }
+
                 String right = rightLines.get(rIdx);
                 double sim = computeSimilarity(left, right);
 
@@ -99,7 +110,8 @@ public class SimilarityMapper {
             }
 
             if (bestRightIdx == -1 || bestSim < SIMILARITY_THRESHOLD) {
-                // No good candidate
+                // Either no candidate survived distance filter
+                // or similarity too low -> treat as deleted
                 matches.add(new LineMatch(i, -1, ChangeType.DELETED, bestSim));
             } else {
                 // classify as UNCHANGED vs MODIFIED vs MOVED later
@@ -109,19 +121,19 @@ public class SimilarityMapper {
 
         return matches;
     }
-        /**
-     * Refine change types: UNCHANGED, MODIFIED, MOVED, DELETED, ADDED.
-     * For now, ADDED will be handled using unmatched right lines separately.
+
+    /**
+     * Phase 4.2: Refine change types: UNCHANGED, MODIFIED, MOVED, DELETED, ADDED.
+     * Uses index distance + similarity, and ensures one-to-one mapping.
      */
     public List<LineMatch> classifyChanges(
             List<LineMatch> initialMatches,
             int rightLineCount
     ) {
-        // Track which right indices are already used
         boolean[] rightUsed = new boolean[rightLineCount];
         Arrays.fill(rightUsed, false);
 
-        List<LineMatch> refined = new ArrayList<LineMatch>();
+        List<LineMatch> refined = new ArrayList<>();
 
         for (LineMatch m : initialMatches) {
             int leftIdx = m.getLeftIndex();
@@ -129,35 +141,45 @@ public class SimilarityMapper {
             double sim = m.getSimilarity();
 
             if (rightIdx == -1) {
+                // no candidate survived threshold
                 refined.add(new LineMatch(leftIdx, -1, ChangeType.DELETED, sim));
                 continue;
             }
 
+            // enforce one-to-one: if right already used, treat as deleted
             if (rightUsed[rightIdx]) {
-                // This right line is already taken by a better/earlier match
                 refined.add(new LineMatch(leftIdx, -1, ChangeType.DELETED, sim));
                 continue;
             }
 
             rightUsed[rightIdx] = true;
 
-            // UNCHANGED if similarity is very high (~exact)
-            if (sim >= 0.99 && Math.abs(leftIdx - rightIdx) <= 1) {
-                refined.add(new LineMatch(leftIdx, rightIdx, ChangeType.UNCHANGED, sim));
-            } else {
-                // If positions differ a lot, mark as MOVED; otherwise MODIFIED
-                if (Math.abs(leftIdx - rightIdx) > 3) {
-                    refined.add(new LineMatch(leftIdx, rightIdx, ChangeType.MOVED, sim));
+            ChangeType type;
+            int posDiff = Math.abs(leftIdx - rightIdx);
+
+            if (sim >= 0.95) {
+                // very similar lines
+                if (posDiff == 0) {
+                    type = ChangeType.UNCHANGED;
                 } else {
-                    refined.add(new LineMatch(leftIdx, rightIdx, ChangeType.MODIFIED, sim));
+                    // same content but moved around
+                    type = ChangeType.MOVED;
                 }
+            } else if (sim >= SIMILARITY_THRESHOLD) {
+                // somewhat similar but not identical
+                type = ChangeType.MODIFIED;
+            } else {
+                // this shouldn't normally happen due to initial filtering,
+                // but keep for safety
+                type = ChangeType.DELETED;
             }
+
+            refined.add(new LineMatch(leftIdx, rightIdx, type, sim));
         }
 
-        // Handle ADDED lines: any right index not used at all
+        // ADDED lines: right indices not used at all
         for (int r = 0; r < rightLineCount; r++) {
             if (!rightUsed[r]) {
-                // This line exists only in B (Right) -> ADDED
                 refined.add(new LineMatch(-1, r, ChangeType.ADDED, 0.0));
             }
         }

@@ -5,41 +5,39 @@ import java.util.*;
 // Yusra Ahmed 110106816
 
 public class DiffAlgorithm {
- 
+
     public static class DiffResult {
         public List<DiffLine> leftList;
         public List<DiffLine> rightList;
         public List<EditOperation> editScript;
-        
-        public DiffResult(List<DiffLine> leftList, List<DiffLine> rightList, List<EditOperation> editScript) {
+
+        public DiffResult(List<DiffLine> leftList,
+                          List<DiffLine> rightList,
+                          List<EditOperation> editScript) {
             this.leftList = leftList;
             this.rightList = rightList;
             this.editScript = editScript;
         }
     }
-    
+
     public static class DiffLine {
         public String content;
-        public ChangeType changeType;
+        public ChangeType changeType;        // use global ChangeType
         public int originalLineNumber;
-        
+
         public DiffLine(String content, ChangeType changeType, int originalLineNumber) {
             this.content = content;
             this.changeType = changeType;
             this.originalLineNumber = originalLineNumber;
         }
     }
-    
-    public enum ChangeType {
-        UNCHANGED, ADDED, DELETED, MODIFIED
-    }
-    
+
     public static class EditOperation {
         public OperationType type;
         public int leftLine;
         public int rightLine;
         public String content;
-        
+
         public EditOperation(OperationType type, int leftLine, int rightLine, String content) {
             this.type = type;
             this.leftLine = leftLine;
@@ -47,27 +45,27 @@ public class DiffAlgorithm {
             this.content = content;
         }
     }
-    
+
     public enum OperationType {
         ADD, DELETE, CHANGE
     }
-    
+
     // STEP 1: Implement LCS-based Diff
     public DiffResult computeDiff(List<String> fileA, List<String> fileB) {
         int[][] lcsMatrix = computeLCSMatrix(fileA, fileB);
         List<EditOperation> editScript = computeEditScript(lcsMatrix, fileA, fileB);
-        
+
         List<DiffLine> leftList = createAnnotatedList(fileA, editScript, true);
         List<DiffLine> rightList = createAnnotatedList(fileB, editScript, false);
-        
+
         return new DiffResult(leftList, rightList, editScript);
     }
-    
+
     private int[][] computeLCSMatrix(List<String> fileA, List<String> fileB) {
         int m = fileA.size();
         int n = fileB.size();
         int[][] dp = new int[m + 1][n + 1];
-        
+
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
                 if (fileA.get(i - 1).equals(fileB.get(j - 1))) {
@@ -79,13 +77,13 @@ public class DiffAlgorithm {
         }
         return dp;
     }
-    
+
     // STEP 2: Generate Edit Script
     private List<EditOperation> computeEditScript(int[][] lcs, List<String> fileA, List<String> fileB) {
         List<EditOperation> script = new ArrayList<>();
         int i = fileA.size();
         int j = fileB.size();
-        
+
         while (i > 0 || j > 0) {
             if (i > 0 && j > 0 && fileA.get(i - 1).equals(fileB.get(j - 1))) {
                 i--;
@@ -102,47 +100,47 @@ public class DiffAlgorithm {
         }
         return script;
     }
-    
-    // STEP 3: Create Change Lists - FIXED VERSION
-    private List<DiffLine> createAnnotatedList(List<String> lines, List<EditOperation> script, boolean isLeft) {
+
+    // STEP 3: Create Change Lists (LCS-level view: only UNCHANGED/ADDED/DELETED)
+    private List<DiffLine> createAnnotatedList(List<String> lines,
+                                               List<EditOperation> script,
+                                               boolean isLeft) {
         List<DiffLine> annotated = new ArrayList<>();
-        
+
         if (isLeft) {
-            // For left file (fileA): handle DELETED and UNCHANGED lines
+            // For left file (fileA): mark DELETED vs UNCHANGED
             Set<Integer> deletedLines = new HashSet<>();
-            
+
             for (EditOperation op : script) {
                 if (op.type == OperationType.DELETE) {
                     deletedLines.add(op.leftLine);
                 }
             }
-            
+
             for (int i = 0; i < lines.size(); i++) {
-                if (deletedLines.contains(i)) {
-                    annotated.add(new DiffLine(lines.get(i), ChangeType.DELETED, i + 1));
-                } else {
-                    annotated.add(new DiffLine(lines.get(i), ChangeType.UNCHANGED, i + 1));
-                }
+                ChangeType type = deletedLines.contains(i)
+                        ? ChangeType.DELETED
+                        : ChangeType.UNCHANGED;
+                annotated.add(new DiffLine(lines.get(i), type, i + 1));
             }
         } else {
-            // For right file (fileB): handle ADDED and UNCHANGED lines
+            // For right file (fileB): mark ADDED vs UNCHANGED
             Set<Integer> addedLines = new HashSet<>();
-            
+
             for (EditOperation op : script) {
                 if (op.type == OperationType.ADD) {
                     addedLines.add(op.rightLine);
                 }
             }
-            
+
             for (int i = 0; i < lines.size(); i++) {
-                if (addedLines.contains(i)) {
-                    annotated.add(new DiffLine(lines.get(i), ChangeType.ADDED, i + 1));
-                } else {
-                    annotated.add(new DiffLine(lines.get(i), ChangeType.UNCHANGED, i + 1));
-                }
+                ChangeType type = addedLines.contains(i)
+                        ? ChangeType.ADDED
+                        : ChangeType.UNCHANGED;
+                annotated.add(new DiffLine(lines.get(i), type, i + 1));
             }
         }
-        
+
         return annotated;
     }
 }
