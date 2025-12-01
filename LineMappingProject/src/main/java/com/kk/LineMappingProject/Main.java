@@ -30,7 +30,7 @@ public class Main {
 
         public static void testFiles(String file1, String file2) {
 
-            System.out.println("=== Testing DiffAlgorithm with File Paths ===\n");
+            System.out.println("=== Testing Line Mapping with File Paths ===\n");
 
             // -----------------------------
             // Phase 1: Read normalized files
