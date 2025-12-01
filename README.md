@@ -7,3 +7,10 @@ This project focuses on building a simple tool that compares two versions of a t
 # Authors
 @octokatherine
 Kulsum Khan khan4n1@uwindsor.ca Yusra Ahmed ahmed2z@uwindsor.ca Najiya Ahmad ahmad29@uwindsor.ca Mahnoz Akhtari akhtari1@uwindsor.ca Hajar Alchamih alchamih@uwindsor.ca
+
+# Running Tests
+To test the program first make sure you are in the correct directery then compile code by doing
+  javac con/kk/LineMappingProject/*.java
+Then run the program by this prompt
+  java.kk.LineMapping.project.Main (path to file version 1) (path to file version 2)
+  
