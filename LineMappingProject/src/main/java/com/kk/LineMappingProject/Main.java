@@ -10,7 +10,7 @@ public class Main {
 
     /**
      * Direct entry point so you can run:
-     *   java -cp target/classes com.kk.LineMappingProject.TestDiffWithPaths fileA fileB
+     *   java -cp target/classes com.kk.LineMappingProject.Main fileA fileB
      */
     public static void main(String[] args) {
         if (args.length < 2) {
