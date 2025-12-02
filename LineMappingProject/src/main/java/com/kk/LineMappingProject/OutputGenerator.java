@@ -17,7 +17,8 @@ public class OutputGenerator {
         int totalLinesB = (rightLines == null) ? 0 : rightLines.size();
 
         // Header
-        System.out.println("\nMAPPING_START");
+        System.out.println("=== Testing Line Mapping with File Paths ===\n");
+        System.out.println("MAPPING_START");
         System.out.println("FILE_A: " + fileAName);
         System.out.println("FILE_B: " + fileBName);
         System.out.println("TOTAL_LINES_A: " + totalLinesA);
@@ -70,7 +71,7 @@ public class OutputGenerator {
             int lineA = (leftIdx >= 0 && leftIdx < totalLinesA) ? (leftIdx + 1) : -1;
             int lineB = (rightIdx >= 0 && rightIdx < totalLinesB) ? (rightIdx + 1) : -1;
 
-            String contentA = "";
+           /* String contentA = "";
             if (leftIdx >= 0 && leftIdx < totalLinesA) {
                 contentA = leftLines.get(leftIdx);
             }
@@ -78,29 +79,29 @@ public class OutputGenerator {
             String contentB = "";
             if (rightIdx >= 0 && rightIdx < totalLinesB) {
                 contentB = rightLines.get(rightIdx);
-            }
+            } */
 
             String prefix = lineA + " - " + lineB + ": " +
                             type.name() + ": " +
-                            String.format("%.3f", sim) + ": ";
+                            String.format("%.3f", sim);
 
             String mappingLine;
 
             switch (type) {
                 case DELETED:
-                    mappingLine = prefix + contentA;
+                    mappingLine = prefix; // contentA;
                     break;
                 case ADDED:
-                    mappingLine = prefix + contentB;
+                    mappingLine = prefix; // contentB;
                     break;
                 case MOVED:
-                    mappingLine = prefix + contentB;
+                    mappingLine = prefix; // contentB;
                     break;
                 case MODIFIED:
-                    mappingLine = prefix + contentA + " -> " + contentB;
+                    mappingLine = prefix; // contentA + " -> " + contentB;
                     break;
                 default:
-                    mappingLine = prefix + contentA + " -> " + contentB;
+                    mappingLine = prefix; //contentA + " -> " + contentB;
                     break;
             }
 
