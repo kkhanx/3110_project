@@ -3,6 +3,7 @@ package com.kk.LineMappingProject;
 import java.util.*;
 
 // Yusra Ahmed 110106816
+// Kulsum Khan 110139964
 
 public class DiffAlgorithm {
 
@@ -49,11 +50,15 @@ public class DiffAlgorithm {
     public enum OperationType {
         ADD, DELETE, CHANGE
     }
-
+    
     // STEP 1: Implement LCS-based Diff
     public DiffResult computeDiff(List<String> fileA, List<String> fileB) {
-        int[][] lcsMatrix = computeLCSMatrix(fileA, fileB);
-        List<EditOperation> editScript = computeEditScript(lcsMatrix, fileA, fileB);
+    	
+    	int maxLineChange = 1; //this is the max a line can move before we count it as added/deleted
+    	//it's 1, because if a line moves even +-1, it should be counted as moved
+    	
+        int[][] lcsMatrix = computeLCSMatrix(fileA, fileB, maxLineChange);
+        List<EditOperation> editScript = computeEditScript(lcsMatrix, fileA, fileB, 1);
 
         List<DiffLine> leftList = createAnnotatedList(fileA, editScript, true);
         List<DiffLine> rightList = createAnnotatedList(fileB, editScript, false);
@@ -61,14 +66,18 @@ public class DiffAlgorithm {
         return new DiffResult(leftList, rightList, editScript);
     }
 
-    private int[][] computeLCSMatrix(List<String> fileA, List<String> fileB) {
+    private int[][] computeLCSMatrix(List<String> fileA, List<String> fileB, int maxLineChange) {
         int m = fileA.size();
         int n = fileB.size();
         int[][] dp = new int[m + 1][n + 1];
 
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                if (fileA.get(i - 1).equals(fileB.get(j - 1))) {
+            	
+            	boolean contentMatches = fileA.get(i-1).equals(fileB.get(j-1));
+            	boolean lineInRange = Math.abs((i-1)-(j-1)) <= maxLineChange; 
+            	
+                if (contentMatches && lineInRange) { //check content and if the line has moved at all
                     dp[i][j] = dp[i - 1][j - 1] + 1;
                 } else {
                     dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
@@ -79,13 +88,18 @@ public class DiffAlgorithm {
     }
 
     // STEP 2: Generate Edit Script
-    private List<EditOperation> computeEditScript(int[][] lcs, List<String> fileA, List<String> fileB) {
+    private List<EditOperation> computeEditScript(int[][] lcs, List<String> fileA, List<String> fileB, int maxLineChange) {
         List<EditOperation> script = new ArrayList<>();
         int i = fileA.size();
         int j = fileB.size();
 
         while (i > 0 || j > 0) {
-            if (i > 0 && j > 0 && fileA.get(i - 1).equals(fileB.get(j - 1))) {
+        	
+        	boolean contentMatches = (i > 0 && j > 0) && fileA.get(i - 1).equals(fileB.get(j - 1));
+        	boolean lineInRange = (i > 0 && j > 0) && Math.abs((i-1)-(j-1)) <= maxLineChange; 
+        	
+        	
+            if (contentMatches && lineInRange) {
                 i--;
                 j--;
             } else if (j > 0 && (i == 0 || lcs[i][j - 1] >= lcs[i - 1][j])) {
@@ -118,9 +132,11 @@ public class DiffAlgorithm {
             }
 
             for (int i = 0; i < lines.size(); i++) {
+
                 ChangeType type = deletedLines.contains(i)
                         ? ChangeType.DELETED
                         : ChangeType.UNCHANGED;
+
                 annotated.add(new DiffLine(lines.get(i), type, i + 1));
             }
         } else {

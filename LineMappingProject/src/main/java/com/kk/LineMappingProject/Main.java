@@ -3,9 +3,9 @@ package com.kk.LineMappingProject;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Map.Entry;
 
-// Yusra Ahmed 110106816, Mahnoz Akhtari 105011198
-// extra changes: Kulsum Khan 110139964
+// Yusra Ahmed 110106816, Mahnoz Akhtari 105011198, Kulsum Khan 110139964
 
 public class Main {
 
@@ -47,9 +47,13 @@ public class Main {
             // ----------------------------------------
             DiffAlgorithm diff = new DiffAlgorithm();
             DiffAlgorithm.DiffResult result = diff.computeDiff(fileALines, fileBLines);
-
+            
+    
             List<DiffAlgorithm.DiffLine> leftDiff  = result.leftList;
+            
+
             List<DiffAlgorithm.DiffLine> rightDiff = result.rightList;
+
 
             // -----------------------------------------------------------------
             // Phase 3: Build candidate sets using SimHash (top-K = 15),
@@ -58,6 +62,7 @@ public class Main {
 
             // Phase-3-specific views: only lines that are NOT UNCHANGED
             List<String> phase3LeftLines = new ArrayList<>();
+            
             List<Integer> phase3LeftToOriginal = new ArrayList<>();
 
             for (int i = 0; i < leftDiff.size(); i++) {
@@ -78,9 +83,12 @@ public class Main {
                     phase3RightToOriginal.add(j);  // original index in file B
                 }
             }
+            
 
             Map<Integer, List<Integer>> candidateMap =
                     CandidateGenerator.buildCandidates(phase3LeftLines, phase3RightLines, 15);
+            
+          
 
             // -----------------------------------------
             // Phase 4: Similarity-based mapping
@@ -90,6 +98,8 @@ public class Main {
             // Phase 4.1 – initial matches on Phase-3 views
             List<LineMatch> initialMatchesPhase3 =
                     similarityMapper.computeInitialMatches(phase3LeftLines, phase3RightLines, candidateMap);
+            
+            
 
             // Phase 4.2 – classify changes (final labels) on Phase-3 views
             List<LineMatch> finalMatchesPhase3 =
@@ -157,20 +167,6 @@ public class Main {
                     );
                 }
             }
-
-            // -----------------------------
-            // Print Phase 4 matches
-            // -----------------------------
-            System.out.println("\n=== PHASE 4: Similarity-based Line Mapping ===");
-            for (LineMatch m : finalMatches) {
-                System.out.println(m);
-            }
-
-            // Optional: still print structural edit script from LCS for reference
-            printEditScript(result);
-
-            // Summary from Phase 4 labels
-            printSummaryFromMatches(finalMatches);
 
             // -----------------------------------------
             // Phase 5: Final mapping-style output
