@@ -174,7 +174,8 @@ public class Main {
                     finalMatches
             );
         }
-
+        
+        //method for extra information
         private static void printEditScript(DiffAlgorithm.DiffResult result) {
             System.out.println("\n EDIT OPERATIONS (LCS-based) FOUND: " + result.editScript.size());
             for (DiffAlgorithm.EditOperation op : result.editScript) {
@@ -187,38 +188,6 @@ public class Main {
             }
         }
 
-        private static void printSummaryFromMatches(List<LineMatch> matches) {
-            int modified = 0, moved = 0, added = 0, deleted = 0, unchanged = 0;
-
-            for (LineMatch lm : matches) {
-                switch (lm.getChangeType()) {
-                    case MODIFIED:
-                        modified++;
-                        break;
-                    case MOVED:
-                        moved++;
-                        break;
-                    case ADDED:
-                        added++;
-                        break;
-                    case DELETED:
-                        deleted++;
-                        break;
-                    case UNCHANGED:
-                        unchanged++;
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            System.out.println("\n SUMMARY (Phase 4 – Similarity Mapping):");
-            System.out.println("   Unchanged: " + unchanged);
-            System.out.println("   Modified : " + modified);
-            System.out.println("   Moved    : " + moved);
-            System.out.println("   Added    : " + added);
-            System.out.println("   Deleted  : " + deleted);
-            System.out.println("   Total labelled lines: " + matches.size());
-        }
+      
     }
 }
