@@ -12,7 +12,7 @@ Mahnoz Akhtari akhtari1@uwindsor.ca
 Hajar Alchamih alchamih@uwindsor.ca  
 
 # Running Tests
-To test the program first make sure you are in the correct directery then compile code by doing in terminal   
+To test the program first make sure you are in the correct directery then compile code by doing prompting this in terminal  
   `javac con/kk/LineMappingProject/*.java`  
 Then run the program by this prompt  
   `java.kk.LineMapping.project.Main [path to file version 1].[FILE TYPE] (path to file version 2).[FILE TYPE]`  
