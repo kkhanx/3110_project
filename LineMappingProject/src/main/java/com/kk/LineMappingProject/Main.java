@@ -31,16 +31,11 @@ public class Main {
 
         public static void testFiles(String file1, String file2) {
 
-            System.out.println("=== Testing Line Mapping with File Paths ===\n");
-
             // -----------------------------
             // Phase 1: Read normalized files
             // -----------------------------
             List<String> fileALines = FileNormalization.normalize(file1);
             List<String> fileBLines = FileNormalization.normalize(file2);
-
-            System.out.println("File A: " + file1 + " (" + fileALines.size() + " lines)");
-            System.out.println("File B: " + file2 + " (" + fileBLines.size() + " lines)");
 
             // ----------------------------------------
             // Phase 2: Run LCS-based DiffAlgorithm
