@@ -173,7 +173,8 @@ public class SimilarityMapper {
                 // but keep for safety
                 type = ChangeType.DELETED;
             }
-
+            
+            System.out.println(leftIdx + " " +  rightIdx + " " +  type + " " + sim);
             refined.add(new LineMatch(leftIdx, rightIdx, type, sim));
         }
 
