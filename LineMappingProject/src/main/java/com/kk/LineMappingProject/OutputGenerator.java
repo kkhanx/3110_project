@@ -70,7 +70,8 @@ public class OutputGenerator {
 
             int lineA = (leftIdx >= 0 && leftIdx < totalLinesA) ? (leftIdx + 1) : -1;
             int lineB = (rightIdx >= 0 && rightIdx < totalLinesB) ? (rightIdx + 1) : -1;
-
+            
+           //removing content for the output
            /* String contentA = "";
             if (leftIdx >= 0 && leftIdx < totalLinesA) {
                 contentA = leftLines.get(leftIdx);
