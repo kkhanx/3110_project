@@ -12,8 +12,17 @@ Mahnoz Akhtari akhtari1@uwindsor.ca
 Hajar Alchamih alchamih@uwindsor.ca  
 
 # Running Tests
-To test the program first make sure you are in the correct directery then compile code by doing prompting this in terminal  
+Method 1: Command Line
+To test the program first make sure you are in the correct directery then compile code by prompting this in terminal:  
   `javac con/kk/LineMappingProject/*.java`  
-Then run the program by this prompt  
+Then run the program by this prompt:  
   `java.kk.LineMapping.project.Main [path to file version 1].[FILE TYPE] (path to file version 2).[FILE TYPE]`  
-  
+Method 2: 
+Method 3: Eclipse
+After pulling the updated project into Eclipse, click the green Run button once to create the default configuration. 
+Next, click the small arrow beside the Run button and select Run Configurations.
+In the window that opens, select the configuration named “Main” under Java Application on the left panel.
+Go to the Arguments tab and enter the two file paths you want to test in the Program Arguments box using the format: 
+[path to file version 1].[FILE TYPE] [path to file version 2].[FILE TYPE]
+Click Apply, then Run.
+Any time you want to test different files, simply return to the Arguments tab and update the two file paths.
