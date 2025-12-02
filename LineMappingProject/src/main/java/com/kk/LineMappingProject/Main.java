@@ -7,15 +7,11 @@ import java.util.Map;
 // Yusra Ahmed 110106816, Mahnoz Akhtari 105011198, Kulsum Khan 110139964, Najiya Ahmad 110110372
 
 public class Main {
-
-    /**
-     * Direct entry point so you can run:
-     *   java -cp target/classes com.kk.LineMappingProject.Main fileA fileB
-     */
+	
     public static void main(String[] args) {
         if (args.length < 2) {
-            System.out.println("Usage: java com.kk.LineMappingProject.TestDiffWithPaths <file1_path> <file2_path>");
-            System.out.println("Example: java com.kk.LineMappingProject.TestDiffWithPaths /path/to/version1.java /path/to/version2.java");
+            System.out.println("Usage: java -cp target/classes com.kk.LineMappingProject.Main <file1_path> <file2_path>");
+            System.out.println("Example: java -cp target/classes com.kk.LineMappingProject.Main /path/to/version1.java /path/to/version2.java");
             return;
         }
 
@@ -80,7 +76,7 @@ public class Main {
             
 
             Map<Integer, List<Integer>> candidateMap =
-                    CandidateGenerator.buildCandidates(phase3LeftLines, phase3RightLines, 15);
+                    CandidateGenerator.buildCandidates(phase3LeftLines, phase3RightLines, 15); //get best 15 candidates
             
           
 
