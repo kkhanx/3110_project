@@ -12,7 +12,7 @@ Mahnoz Akhtari akhtari1@uwindsor.ca
 Hajar Alchamih alchamih@uwindsor.ca  
 
 # Running Tests
-Method 1: Command Line
+Method 1: Command Line  
 To test the program first make sure you are in the correct directery then compile code by prompting this in terminal:  
   `javac con/kk/LineMappingProject/*.java`  
 Then run the program by this prompt:  
