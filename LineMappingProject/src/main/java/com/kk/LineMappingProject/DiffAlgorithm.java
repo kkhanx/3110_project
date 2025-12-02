@@ -3,6 +3,7 @@ package com.kk.LineMappingProject;
 import java.util.*;
 
 // Yusra Ahmed 110106816
+// Kulsum Khan 110139964
 
 public class DiffAlgorithm {
 
@@ -53,7 +54,8 @@ public class DiffAlgorithm {
     // STEP 1: Implement LCS-based Diff
     public DiffResult computeDiff(List<String> fileA, List<String> fileB) {
     	
-    	int maxLineChange = 1; //this is the max a line can move before we discount as unchanged (kk)
+    	int maxLineChange = 1; //this is the max a line can move before we count it as added/deleted
+    	//it's 1, because if a line moves even +-1, it should be counted as moved
     	
         int[][] lcsMatrix = computeLCSMatrix(fileA, fileB, maxLineChange);
         List<EditOperation> editScript = computeEditScript(lcsMatrix, fileA, fileB, 1);
@@ -75,7 +77,7 @@ public class DiffAlgorithm {
             	boolean contentMatches = fileA.get(i-1).equals(fileB.get(j-1));
             	boolean lineInRange = Math.abs((i-1)-(j-1)) <= maxLineChange; 
             	
-                if (contentMatches && lineInRange) { //originally you were just checking content
+                if (contentMatches && lineInRange) { //check content and if the line has moved at all
                     dp[i][j] = dp[i - 1][j - 1] + 1;
                 } else {
                     dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);

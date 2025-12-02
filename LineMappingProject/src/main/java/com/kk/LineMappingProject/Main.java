@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 
-// Yusra Ahmed 110106816, Mahnoz Akhtari 105011198
-// extra changes: Kulsum Khan 110139964
+// Yusra Ahmed 110106816, Mahnoz Akhtari 105011198, Kulsum Khan 110139964
 
 public class Main {
 
@@ -49,19 +48,12 @@ public class Main {
             DiffAlgorithm diff = new DiffAlgorithm();
             DiffAlgorithm.DiffResult result = diff.computeDiff(fileALines, fileBLines);
             
-            System.out.println("---------------------- left list");
+    
             List<DiffAlgorithm.DiffLine> leftDiff  = result.leftList;
             
-            for(DiffAlgorithm.DiffLine f : leftDiff) {
-            	System.out.println(f.content + f.changeType);
-            }
-            
-            System.out.println("------------------------- right list");
+
             List<DiffAlgorithm.DiffLine> rightDiff = result.rightList;
-            
-            for(DiffAlgorithm.DiffLine x : rightDiff) {
-            	System.out.println(x.content + x.changeType);
-            }
+
 
             // -----------------------------------------------------------------
             // Phase 3: Build candidate sets using SimHash (top-K = 15),
@@ -92,19 +84,11 @@ public class Main {
                 }
             }
             
-            System.out.println("printing candidate map");
+
             Map<Integer, List<Integer>> candidateMap =
                     CandidateGenerator.buildCandidates(phase3LeftLines, phase3RightLines, 15);
             
-            for(Entry<Integer, List<Integer>> e : candidateMap.entrySet()) {
-            	System.out.println("index: " + e.getKey());
-            	
-            	System.out.println("possible matches");
-            	for(Integer x : e.getValue()) {
-            		System.out.println("       " + x);
-            	}
-            	
-            }
+          
 
             // -----------------------------------------
             // Phase 4: Similarity-based mapping
@@ -183,20 +167,6 @@ public class Main {
                     );
                 }
             }
-
-            // -----------------------------
-            // Print Phase 4 matches
-            // -----------------------------
-//            System.out.println("\n=== PHASE 4: Similarity-based Line Mapping ===");
-//            for (LineMatch m : finalMatches) {
-//                System.out.println(m);
-//            }
-
-            // Optional: still print structural edit script from LCS for reference
-            //printEditScript(result);
-
-            // Summary from Phase 4 labels
-            printSummaryFromMatches(finalMatches);
 
             // -----------------------------------------
             // Phase 5: Final mapping-style output
