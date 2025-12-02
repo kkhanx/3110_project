@@ -163,11 +163,11 @@ public class Main {
             // -----------------------------
             System.out.println("\n=== PHASE 4: Similarity-based Line Mapping ===");
             for (LineMatch m : finalMatches) {
-                System.out.println(m);
+                System.out.println(m.toString());
             }
 
             // Optional: still print structural edit script from LCS for reference
-            printEditScript(result);
+            //printEditScript(result);
 
             // Summary from Phase 4 labels
             printSummaryFromMatches(finalMatches);
