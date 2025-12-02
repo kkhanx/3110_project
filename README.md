@@ -23,6 +23,6 @@ After pulling the updated project into Eclipse, click the green Run button once 
 Next, click the small arrow beside the Run button and select Run Configurations.
 In the window that opens, select the configuration named “Main” under Java Application on the left panel.
 Go to the Arguments tab and enter the two file paths you want to test in the Program Arguments box using the format: 
-[path to file version 1].[FILE TYPE] [path to file version 2].[FILE TYPE]
+`[path to file version 1].[FILE TYPE] (path to file version 2).[FILE TYPE]` 
 Click Apply, then Run.
 Any time you want to test different files, simply return to the Arguments tab and update the two file paths.
