@@ -8,22 +8,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-
+//Phase 1: Preprocessing
 //Kulsum Khan - 110139964
-//phase 1: preprocessing
 
 public class FileNormalization {
 	
-	/* purpose: remove whitespaces around words, standardize spaces to 1 space (all indents and spaces between
-	 * words must become 1 space), make everything lower case, keep empty lines since theyre important for line mapping
-	*/
 	
+	//Method normalize(String codeSourceStringPath)
+
+	//Input: 1 code file path (as a string)
+	//Output: returns an array list with each line of the code file being normalized
 	
-	//method normalize(String codeSourceStringPath)
-	//input: 1 code file path (as a string)
-	//output: returns an array list with each line of the code file being normalized
-	
-	//example usage: ArrayList<String> normalizedFile = FileNormalization.normalize(/path/to/code.java);
+	//Example usage: ArrayList<String> normalizedFile = FileNormalization.normalize(/path/to/code.java);
 	
 	public static ArrayList<String> normalize(String codeSourceStringPath) {
 		
@@ -32,26 +28,22 @@ public class FileNormalization {
 		Path codeSourcePath = Paths.get(codeSourceStringPath);
 
 		if(!Files.isReadable(codeSourcePath)) {
-			System.out.println("error");
-			System.exit(0);
+			System.err.println("File is Not Readable");
 		}
 		
 		
 		try(BufferedReader reader = Files.newBufferedReader(codeSourcePath)) {
 			
-			
-			//read each line from source code file
-			//normalize it
-			//write normalized file into normalized text file 
-			
 			String currentLine;
 			String nextLine = reader.readLine();
 			
-			while(nextLine != null) {
+			while(nextLine != null) { 
+				//read each line from source code file
 				currentLine = nextLine;
 				nextLine = reader.readLine();
-				//normalize: 
 				
+				
+				//normalize: 
 				//1. make it all lower case
 				String normalizedLine = currentLine.toLowerCase();
 				
@@ -63,7 +55,7 @@ public class FileNormalization {
 			}
 		}
 		catch(IOException e) {
-			System.err.println("error opening file " + e.getMessage());
+			System.err.println("Error opening BufferedReader for File " + e.getMessage());
 			e.printStackTrace();
 			
 		}

@@ -17,7 +17,7 @@ public class OutputGenerator {
         int totalLinesB = (rightLines == null) ? 0 : rightLines.size();
 
         // Header
-        System.out.println("=== Testing Line Mapping with File Paths ===\n");
+        System.out.println("\n=== Line Mapping with File Paths ===\n");
         System.out.println("MAPPING_START");
         System.out.println("FILE_A: " + fileAName);
         System.out.println("FILE_B: " + fileBName);

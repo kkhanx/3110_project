@@ -3,20 +3,15 @@ package com.kk.LineMappingProject;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Map.Entry;
 
 // Yusra Ahmed 110106816, Mahnoz Akhtari 105011198, Kulsum Khan 110139964, Najiya Ahmad 110110372
 
 public class Main {
-
-    /**
-     * Direct entry point so you can run:
-     *   java -cp target/classes com.kk.LineMappingProject.Main fileA fileB
-     */
+	
     public static void main(String[] args) {
         if (args.length < 2) {
-            System.out.println("Usage: java com.kk.LineMappingProject.TestDiffWithPaths <file1_path> <file2_path>");
-            System.out.println("Example: java com.kk.LineMappingProject.TestDiffWithPaths /path/to/version1.java /path/to/version2.java");
+            System.out.println("Usage: java -cp target/classes com.kk.LineMappingProject.Main <file1_path> <file2_path>");
+            System.out.println("Example: java -cp target/classes com.kk.LineMappingProject.Main /path/to/version1.java /path/to/version2.java");
             return;
         }
 
@@ -81,7 +76,7 @@ public class Main {
             
 
             Map<Integer, List<Integer>> candidateMap =
-                    CandidateGenerator.buildCandidates(phase3LeftLines, phase3RightLines, 15);
+                    CandidateGenerator.buildCandidates(phase3LeftLines, phase3RightLines, 15); //get best 15 candidates
             
           
 
@@ -174,7 +169,8 @@ public class Main {
                     finalMatches
             );
         }
-
+        
+        //method for extra information
         private static void printEditScript(DiffAlgorithm.DiffResult result) {
             System.out.println("\n EDIT OPERATIONS (LCS-based) FOUND: " + result.editScript.size());
             for (DiffAlgorithm.EditOperation op : result.editScript) {
@@ -187,38 +183,6 @@ public class Main {
             }
         }
 
-        private static void printSummaryFromMatches(List<LineMatch> matches) {
-            int modified = 0, moved = 0, added = 0, deleted = 0, unchanged = 0;
-
-            for (LineMatch lm : matches) {
-                switch (lm.getChangeType()) {
-                    case MODIFIED:
-                        modified++;
-                        break;
-                    case MOVED:
-                        moved++;
-                        break;
-                    case ADDED:
-                        added++;
-                        break;
-                    case DELETED:
-                        deleted++;
-                        break;
-                    case UNCHANGED:
-                        unchanged++;
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            System.out.println("\n SUMMARY (Phase 4 – Similarity Mapping):");
-            System.out.println("   Unchanged: " + unchanged);
-            System.out.println("   Modified : " + modified);
-            System.out.println("   Moved    : " + moved);
-            System.out.println("   Added    : " + added);
-            System.out.println("   Deleted  : " + deleted);
-            System.out.println("   Total labelled lines: " + matches.size());
-        }
+      
     }
 }
