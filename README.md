@@ -17,9 +17,9 @@ To test the program first make sure you are in the correct directery then compil
   `javac con/kk/LineMappingProject/*.java`  
 Then run the program by this prompt:  
   `java.kk.LineMapping.project.Main [path to file version 1].[FILE TYPE] (path to file version 2).[FILE TYPE]`  
-Method 2:   
-Method 3: Eclipse
-After pulling the updated project into Eclipse, click the green Run button once to create the default configuration. 
+Method 2:    
+Method 3: Eclipse  
+After pulling the updated project into Eclipse, click the green Run button once to create the default configuration.  
 Next, click the small arrow beside the Run button and select Run Configurations.
 In the window that opens, select the configuration named “Main” under Java Application on the left panel.
 Go to the Arguments tab and enter the two file paths you want to test in the Program Arguments box using the format: 
