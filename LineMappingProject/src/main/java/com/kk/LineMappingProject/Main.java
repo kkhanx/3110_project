@@ -3,6 +3,7 @@ package com.kk.LineMappingProject;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Map.Entry;
 
 // Yusra Ahmed 110106816, Mahnoz Akhtari 105011198
 // extra changes: Kulsum Khan 110139964
@@ -47,9 +48,20 @@ public class Main {
             // ----------------------------------------
             DiffAlgorithm diff = new DiffAlgorithm();
             DiffAlgorithm.DiffResult result = diff.computeDiff(fileALines, fileBLines);
-
+            
+            System.out.println("---------------------- left list");
             List<DiffAlgorithm.DiffLine> leftDiff  = result.leftList;
+            
+            for(DiffAlgorithm.DiffLine f : leftDiff) {
+            	System.out.println(f.content + f.changeType);
+            }
+            
+            System.out.println("------------------------- right list");
             List<DiffAlgorithm.DiffLine> rightDiff = result.rightList;
+            
+            for(DiffAlgorithm.DiffLine x : rightDiff) {
+            	System.out.println(x.content + x.changeType);
+            }
 
             // -----------------------------------------------------------------
             // Phase 3: Build candidate sets using SimHash (top-K = 15),
@@ -58,6 +70,7 @@ public class Main {
 
             // Phase-3-specific views: only lines that are NOT UNCHANGED
             List<String> phase3LeftLines = new ArrayList<>();
+            
             List<Integer> phase3LeftToOriginal = new ArrayList<>();
 
             for (int i = 0; i < leftDiff.size(); i++) {
@@ -78,9 +91,20 @@ public class Main {
                     phase3RightToOriginal.add(j);  // original index in file B
                 }
             }
-
+            
+            System.out.println("printing candidate map");
             Map<Integer, List<Integer>> candidateMap =
                     CandidateGenerator.buildCandidates(phase3LeftLines, phase3RightLines, 15);
+            
+            for(Entry<Integer, List<Integer>> e : candidateMap.entrySet()) {
+            	System.out.println("index: " + e.getKey());
+            	
+            	System.out.println("possible matches");
+            	for(Integer x : e.getValue()) {
+            		System.out.println("       " + x);
+            	}
+            	
+            }
 
             // -----------------------------------------
             // Phase 4: Similarity-based mapping
@@ -90,6 +114,8 @@ public class Main {
             // Phase 4.1 – initial matches on Phase-3 views
             List<LineMatch> initialMatchesPhase3 =
                     similarityMapper.computeInitialMatches(phase3LeftLines, phase3RightLines, candidateMap);
+            
+            
 
             // Phase 4.2 – classify changes (final labels) on Phase-3 views
             List<LineMatch> finalMatchesPhase3 =

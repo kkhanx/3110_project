@@ -101,6 +101,7 @@ public class SimilarityMapper {
                 }
 
                 String right = rightLines.get(rIdx);
+               
                 double sim = computeSimilarity(left, right);
 
                 if (sim > bestSim) {
@@ -136,6 +137,7 @@ public class SimilarityMapper {
         List<LineMatch> refined = new ArrayList<>();
 
         for (LineMatch m : initialMatches) {
+        	
             int leftIdx = m.getLeftIndex();
             int rightIdx = m.getRightIndex();
             double sim = m.getSimilarity();
@@ -174,7 +176,6 @@ public class SimilarityMapper {
                 type = ChangeType.DELETED;
             }
             
-            System.out.println(leftIdx + " " +  rightIdx + " " +  type + " " + sim);
             refined.add(new LineMatch(leftIdx, rightIdx, type, sim));
         }
 
