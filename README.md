@@ -1,28 +1,60 @@
 # 3110_project
 Automated Line Mapping Tool for Versioned Files
 
-# Introduction
-This project focuses on building a simple tool that compares two versions of a text file and shows how lines from the old file map to lines in the new one. The goal was to make it easier to track changes and understand how content moves or gets updated between versions. To do this, we used Java to read, normalize, and compare files, and then generated a clear mapping of where each original line ended up. The results show that the tool can efficiently identify matching lines, highlight changes, and give a straightforward view of edits, which can be useful for debugging, version tracking, or understanding code updates
+# Purpose
+> Compares two versions of a file and shows how lines from the older version file map to lines in the newer version. Makes it easier to track changes and understand how content moves or gets updated between versions.
+> Java programming language was used to create the tool. It reads, normalizes, compares lines in each file, and then generates a clear mapping of where each original line ended up. The tool can be useful for debugging, version tracking, and understanding code updates.
 
 # Authors
-Kulsum Khan khan4n1@uwindsor.ca   
-Najiya Ahmad ahmad29@uwindsor.ca   
-Yusra Ahmed ahmed2z@uwindsor.ca (shoaib-peg also Yusra but different computer)  
-Mahnoz Akhtari akhtari1@uwindsor.ca  
-Hajar Alchamih alchamih@uwindsor.ca  
+> Kulsum Khan khan4n1@uwindsor.ca
+> Najiya Ahmad ahmad29@uwindsor.ca
+> Yusra Z. Ahmed ahmed2z@uwindsor.ca (shoaib-peg also Yusra but different computer)
+> Mahnoz Akhtari akhtari1@uwindsor.ca
+> Hajar Alchamih alchamih@uwindsor.ca  
 
-# Running Tests
-Method 1: Command Line  
-To test the program first make sure you are in the correct directery then compile code by prompting this in terminal:  
-  `javac con/kk/LineMappingProject/*.java`  
-Then run the program by this prompt:  
-  `java.kk.LineMapping.project.Main [path to file version 1].[FILE TYPE] (path to file version 2).[FILE TYPE]`  
-Method 2:    
+## Installation
+### Prerequisites
+Java (version 8 or higher)
+Maven (version 3.9.11 or higher) -> ensure PATH and Environment variables are set
+
+Clone repository onto local machine.
+
+## Execution Methods
+
+[!NOTE] The file paths for both files must include an extension signifying type of file (ex: .java, .py etc.)
+
+#### Method 1.1: Command Prompt/Terminal
+1. Use cd to move into the directory for java
+2. Compile the code:
+   `javac com/kk/LineMappingProject/*.java`
+3. Execute the program:
+   `java com.kk.LineMappingProject.Main (path to file version 1) (path to file version 2)`
+
+#### Example Usage of Method 1.1
+```bash
+> cd 
+
+```
+
+
+   
+### Method 1.2: Command Prompt/Terminal
+1. Use cd to move into the directory for LineMappingProject
+2. Compile the project:
+   `mvn clean compile`
+3. Execute the program:
+   `java -cp target/classes com.kk.LineMappingProject.Main (path to file version 1) (path to file version 2)`
+
+#### Example Usage of Method 1.2
+
+### Method 2: Eclipse IDE
+1. Import the project into Eclipse IDE
+   
 Method 3: Eclipse  
 After pulling the updated project into Eclipse, click the green Run button once to create the default configuration.  
 Next, click the small arrow beside the Run button and select Run Configurations.  
 In the window that opens, select the configuration named “Main” under Java Application on the left panel.  
 Go to the Arguments tab and enter the two file paths you want to test in the Program Arguments box using the format:   
-`[path to file version 1].[FILE TYPE] (path to file version 2).[FILE TYPE]`   
+`[path to file version 1] [path to file version 2]`   
 Click Apply, then Run.  
 Any time you want to test different files, simply return to the Arguments tab and update the two file paths.  
