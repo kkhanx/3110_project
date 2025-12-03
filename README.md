@@ -2,7 +2,7 @@
 
 # Purpose
 Compares two versions of a file and shows how lines from the older version file map to lines in the newer version. Makes it easier to track changes and understand how content moves or gets updated between versions.
-The Java programming language was used to create the tool. It reads, normalizes, compares lines in each file, and then generates a clear mapping of where each original line ended up. The tool can be useful for debugging, version tracking, and understanding code updates.
+The Java programming language was used to create the tool, but the mapping is language-independent. It reads, normalizes, compares lines in each file, and then generates a clear mapping of where each original line ended up. The tool can be useful for debugging, version tracking, and understanding code updates.
 
 # Installation
 ## Prerequisites
